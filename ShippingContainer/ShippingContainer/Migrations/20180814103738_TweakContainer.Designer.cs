@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShippingContainer;
 
 namespace ShippingContainer.Migrations
 {
     [DbContext(typeof(ShippingRepository))]
-    partial class ShippingRepositoryModelSnapshot : ModelSnapshot
+    [Migration("20180814103738_TweakContainer")]
+    partial class TweakContainer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

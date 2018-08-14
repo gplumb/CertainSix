@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ShippingContainer.Models
@@ -16,6 +17,7 @@ namespace ShippingContainer.Models
 
         public List<TemperatureRecord> Temperatures { get; set; }
 
+        public DateTime Created { get; set; } = DateTime.UtcNow;
 
         // TODO: Store mean temperature or calculate via query?
 

@@ -50,17 +50,52 @@ namespace ShippingContainer.Controllers
         [ValidateModelState]
         public virtual IActionResult CreateContainer([FromRoute][Required]string tripId, [FromBody]ContainerCreationDetails containerCreationDetails)
         {
-            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(201);
+            // We're using numbers in our datastore, so convert the parameter into an integer
+            int tid = 0;
+            if (!int.TryParse(tripId, out tid))
+            {
+                return null;
+            }
 
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
+            var trip = _repo.Trips.FirstOrDefault(x => x.Id.Equals(tid));
 
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
+            if (trip == null)
+            {
+                return StatusCode(404);
+            }
 
+            // Has the container already been created?
+            var container = _repo.Containers.FirstOrDefault(x => x.ContainerId.Equals(containerCreationDetails.Id));
 
-            throw new NotImplementedException();
+            if (container != null)
+            {
+                return StatusCode(400);
+            }
+
+            // No, then let's create it
+            var model = new Models.Container()
+            {
+                ContainerId = containerCreationDetails.Id,
+                TripId = trip.Id,
+                ProductCount = containerCreationDetails.ProductCount,
+
+                // Use projection to convert from view model to DTO
+                // Note. We don't need to populate ContainerID as EF will take care of referential integrity for us
+                Temperatures = containerCreationDetails.Measurements.Select(tr => new Models.TemperatureRecord()
+                {
+                    Time = tr.Time,
+                    Value = tr.Value,
+                    TripId = trip.Id
+                }).ToList()
+            };
+
+            // TODO: Work out spoilage counts now and Maximum
+            // TODO: Work out mean now or later?
+
+            trip.Updated = DateTime.UtcNow;
+            _repo.Containers.Add(model);
+            _repo.SaveChanges();
+            return StatusCode(201);
         }
 
 
