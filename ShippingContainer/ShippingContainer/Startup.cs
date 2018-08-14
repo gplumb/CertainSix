@@ -13,20 +13,40 @@ namespace ShippingContainer
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
+        public bool IsDevEnvironment { get; private set; }
+
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-        }
 
-        public IConfiguration Configuration { get; }
+#if DEBUG
+            IsDevEnvironment = true;
+#else
+            IsDevEnvironment = env.IsDevelopment();
+#endif
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            // Use in-memory EF provider
-            services.AddDbContext<ShippingRepository>(options => options.UseInMemoryDatabase("ShippingContainer"));
+            if (IsDevEnvironment)
+            {
+                // Use in-memory EF provider
+                services.AddDbContext<ShippingRepository>(options => options.UseInMemoryDatabase("ShippingContainer"));
+            }
+            else
+            {
+                // Use Sql Server provider
+                services.AddDbContext<ShippingRepository>(options => options.UseSqlServer(Configuration["SqlConnectionString"]));
+            }
 
             // Allow DI via constructor
             services.AddTransient<IShippingRepository, ShippingRepository>();
@@ -35,7 +55,7 @@ namespace ShippingContainer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
+            if (IsDevEnvironment)
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -61,10 +81,13 @@ namespace ShippingContainer
 
             app.UseMvc();
 
-            app.UseSwaggerUI(c =>
+            if (IsDevEnvironment)
             {
-                c.SwaggerEndpoint("/apispec.yaml", "Shipping Container Spoilage v1.0.0");
-            });
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/apispec.yaml", "Shipping Container Spoilage v1.0.0");
+                });
+            }
         }
     }
 }

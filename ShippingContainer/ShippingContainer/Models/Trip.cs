@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShippingContainer.Models
 {
@@ -12,5 +13,9 @@ namespace ShippingContainer.Models
         public float SpoilTemperature { get; set; }
 
         public double SpoilDuration { get; set; }
+
+        public DateTime Created { get; set; } = DateTime.UtcNow;
+
+        public DateTime Updated { get; set; }
     }
 }
