@@ -9,17 +9,15 @@
  */
 
 using System;
-using System.Linq;
 using System.Text;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace ShippingContainer.ViewModels
-{ 
+{
     /// <summary>
-    /// 
+    /// TemperatureRecord
     /// </summary>
     [DataContract]
     public partial class TemperatureRecord : IEquatable<TemperatureRecord>
@@ -30,7 +28,8 @@ namespace ShippingContainer.ViewModels
         /// <value>The time of the recording as an ISO 8601 standard string.</value>
         [Required]
         [DataMember(Name="time")]
-        public DateTime? Time { get; set; }
+        public DateTime Time { get; set; }
+
 
         /// <summary>
         /// The recording value in degrees celsius.
@@ -38,7 +37,10 @@ namespace ShippingContainer.ViewModels
         /// <value>The recording value in degrees celsius.</value>
         [Required]
         [DataMember(Name="value")]
-        public float? Value { get; set; }
+        public float Value { get; set; }
+
+
+        #region System.Object
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -54,6 +56,7 @@ namespace ShippingContainer.ViewModels
             return sb.ToString();
         }
 
+
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -62,6 +65,7 @@ namespace ShippingContainer.ViewModels
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
+
 
         /// <summary>
         /// Returns true if objects are equal
@@ -74,6 +78,7 @@ namespace ShippingContainer.ViewModels
             if (ReferenceEquals(this, obj)) return true;
             return obj.GetType() == GetType() && Equals((TemperatureRecord)obj);
         }
+
 
         /// <summary>
         /// Returns true if TemperatureRecord instances are equal
@@ -98,6 +103,7 @@ namespace ShippingContainer.ViewModels
                 );
         }
 
+
         /// <summary>
         /// Gets the hash code
         /// </summary>
@@ -107,17 +113,16 @@ namespace ShippingContainer.ViewModels
             unchecked // Overflow is fine, just wrap
             {
                 var hashCode = 41;
-                // Suitable nullity checks etc, of course :)
-                    if (Time != null)
-                    hashCode = hashCode * 59 + Time.GetHashCode();
-                    if (Value != null)
-                    hashCode = hashCode * 59 + Value.GetHashCode();
+                hashCode = hashCode * 59 + Time.GetHashCode();
+                hashCode = hashCode * 59 + Value.GetHashCode();
                 return hashCode;
             }
         }
 
+        #endregion
+
         #region Operators
-        #pragma warning disable 1591
+#pragma warning disable 1591
 
         public static bool operator ==(TemperatureRecord left, TemperatureRecord right)
         {

@@ -17,9 +17,9 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace ShippingContainer.ViewModels
-{ 
+{
     /// <summary>
-    /// 
+    /// TripCreationDetails
     /// </summary>
     [DataContract]
     public partial class TripCreationDetails : IEquatable<TripCreationDetails>
@@ -31,13 +31,15 @@ namespace ShippingContainer.ViewModels
         [DataMember(Name="name")]
         public string Name { get; set; }
 
+
         /// <summary>
         /// The temperature at which products start to spoil in degrees celsius.
         /// </summary>
         /// <value>The temperature at which products start to spoil in degrees celsius.</value>
         [Required]
         [DataMember(Name="spoilTemperature")]
-        public float? SpoilTemperature { get; set; }
+        public float SpoilTemperature { get; set; }
+
 
         /// <summary>
         /// The number of seconds required at the spoil temperature to cause product spolage.
@@ -45,7 +47,11 @@ namespace ShippingContainer.ViewModels
         /// <value>The number of seconds required at the spoil temperature to cause product spolage.</value>
         [Required]
         [DataMember(Name="spoilDuration")]
-        public double? SpoilDuration { get; set; }
+        [Range(0, double.MaxValue)]
+        public double SpoilDuration { get; set; }
+
+
+        #region System.Object
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -62,6 +68,7 @@ namespace ShippingContainer.ViewModels
             return sb.ToString();
         }
 
+
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -70,6 +77,7 @@ namespace ShippingContainer.ViewModels
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
+
 
         /// <summary>
         /// Returns true if objects are equal
@@ -82,6 +90,7 @@ namespace ShippingContainer.ViewModels
             if (ReferenceEquals(this, obj)) return true;
             return obj.GetType() == GetType() && Equals((TripCreationDetails)obj);
         }
+
 
         /// <summary>
         /// Returns true if TripCreationDetails instances are equal
@@ -101,15 +110,14 @@ namespace ShippingContainer.ViewModels
                 ) && 
                 (
                     SpoilTemperature == other.SpoilTemperature ||
-                    SpoilTemperature != null &&
                     SpoilTemperature.Equals(other.SpoilTemperature)
                 ) && 
                 (
                     SpoilDuration == other.SpoilDuration ||
-                    SpoilDuration != null &&
                     SpoilDuration.Equals(other.SpoilDuration)
                 );
         }
+
 
         /// <summary>
         /// Gets the hash code
@@ -123,16 +131,16 @@ namespace ShippingContainer.ViewModels
                 // Suitable nullity checks etc, of course :)
                     if (Name != null)
                     hashCode = hashCode * 59 + Name.GetHashCode();
-                    if (SpoilTemperature != null)
                     hashCode = hashCode * 59 + SpoilTemperature.GetHashCode();
-                    if (SpoilDuration != null)
                     hashCode = hashCode * 59 + SpoilDuration.GetHashCode();
                 return hashCode;
             }
         }
 
+        #endregion
+
         #region Operators
-        #pragma warning disable 1591
+#pragma warning disable 1591
 
         public static bool operator ==(TripCreationDetails left, TripCreationDetails right)
         {

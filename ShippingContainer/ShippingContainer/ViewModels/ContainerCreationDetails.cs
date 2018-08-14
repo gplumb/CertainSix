@@ -17,9 +17,9 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace ShippingContainer.ViewModels
-{ 
+{
     /// <summary>
-    /// 
+    /// ContainerCreationDetails
     /// </summary>
     [DataContract]
     public partial class ContainerCreationDetails : IEquatable<ContainerCreationDetails>
@@ -32,13 +32,16 @@ namespace ShippingContainer.ViewModels
         [DataMember(Name="id")]
         public string Id { get; set; }
 
+
         /// <summary>
         /// The number of products in the container.
         /// </summary>
         /// <value>The number of products in the container.</value>
         [Required]
         [DataMember(Name="productCount")]
-        public double? ProductCount { get; set; }
+        [Range(0, double.MaxValue)]
+        public double ProductCount { get; set; }
+
 
         /// <summary>
         /// The container measurements.
@@ -47,6 +50,9 @@ namespace ShippingContainer.ViewModels
         [Required]
         [DataMember(Name="measurements")]
         public List<TemperatureRecord> Measurements { get; set; }
+
+
+        #region System.Object
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -63,6 +69,7 @@ namespace ShippingContainer.ViewModels
             return sb.ToString();
         }
 
+
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -71,6 +78,7 @@ namespace ShippingContainer.ViewModels
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
+
 
         /// <summary>
         /// Returns true if objects are equal
@@ -83,6 +91,7 @@ namespace ShippingContainer.ViewModels
             if (ReferenceEquals(this, obj)) return true;
             return obj.GetType() == GetType() && Equals((ContainerCreationDetails)obj);
         }
+
 
         /// <summary>
         /// Returns true if ContainerCreationDetails instances are equal
@@ -102,7 +111,6 @@ namespace ShippingContainer.ViewModels
                 ) && 
                 (
                     ProductCount == other.ProductCount ||
-                    ProductCount != null &&
                     ProductCount.Equals(other.ProductCount)
                 ) && 
                 (
@@ -111,6 +119,7 @@ namespace ShippingContainer.ViewModels
                     Measurements.SequenceEqual(other.Measurements)
                 );
         }
+
 
         /// <summary>
         /// Gets the hash code
@@ -124,7 +133,6 @@ namespace ShippingContainer.ViewModels
                 // Suitable nullity checks etc, of course :)
                     if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                    if (ProductCount != null)
                     hashCode = hashCode * 59 + ProductCount.GetHashCode();
                     if (Measurements != null)
                     hashCode = hashCode * 59 + Measurements.GetHashCode();
@@ -132,8 +140,10 @@ namespace ShippingContainer.ViewModels
             }
         }
 
+        #endregion
+
         #region Operators
-        #pragma warning disable 1591
+#pragma warning disable 1591
 
         public static bool operator ==(ContainerCreationDetails left, ContainerCreationDetails right)
         {

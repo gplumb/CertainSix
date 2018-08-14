@@ -17,9 +17,9 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace ShippingContainer.ViewModels
-{ 
+{
     /// <summary>
-    /// 
+    /// Trip
     /// </summary>
     [DataContract]
     public partial class Trip : IEquatable<Trip>
@@ -31,13 +31,15 @@ namespace ShippingContainer.ViewModels
         [DataMember(Name="id")]
         public string Id { get; set; }
 
+
         /// <summary>
         /// The total number of containers in the trip.
         /// </summary>
         /// <value>The total number of containers in the trip.</value>
         [Required]
         [DataMember(Name="containerCount")]
-        public double? ContainerCount { get; set; }
+        public double ContainerCount { get; set; }
+
 
         /// <summary>
         /// The maximum temperature for all containers in the trip in degrees celsius.
@@ -45,7 +47,8 @@ namespace ShippingContainer.ViewModels
         /// <value>The maximum temperature for all containers in the trip in degrees celsius.</value>
         [Required]
         [DataMember(Name="maxTemperature")]
-        public float? MaxTemperature { get; set; }
+        public float MaxTemperature { get; set; }
+
 
         /// <summary>
         /// The mean temperature for all containers in the trip in degrees celsius.
@@ -53,7 +56,8 @@ namespace ShippingContainer.ViewModels
         /// <value>The mean temperature for all containers in the trip in degrees celsius.</value>
         [Required]
         [DataMember(Name="meanTemperature")]
-        public float? MeanTemperature { get; set; }
+        public float MeanTemperature { get; set; }
+
 
         /// <summary>
         /// The overall number of spoiled containers.
@@ -61,7 +65,8 @@ namespace ShippingContainer.ViewModels
         /// <value>The overall number of spoiled containers.</value>
         [Required]
         [DataMember(Name="spoiledContainerCount")]
-        public double? SpoiledContainerCount { get; set; }
+        public double SpoiledContainerCount { get; set; }
+
 
         /// <summary>
         /// The overall number of spoiled products.
@@ -69,7 +74,9 @@ namespace ShippingContainer.ViewModels
         /// <value>The overall number of spoiled products.</value>
         [Required]
         [DataMember(Name="spoiledProductCount")]
-        public double? SpoiledProductCount { get; set; }
+        public double SpoiledProductCount { get; set; }
+
+        #region System.Object
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -89,6 +96,7 @@ namespace ShippingContainer.ViewModels
             return sb.ToString();
         }
 
+
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -97,6 +105,7 @@ namespace ShippingContainer.ViewModels
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
+
 
         /// <summary>
         /// Returns true if objects are equal
@@ -109,6 +118,7 @@ namespace ShippingContainer.ViewModels
             if (ReferenceEquals(this, obj)) return true;
             return obj.GetType() == GetType() && Equals((Trip)obj);
         }
+
 
         /// <summary>
         /// Returns true if Trip instances are equal
@@ -128,30 +138,26 @@ namespace ShippingContainer.ViewModels
                 ) && 
                 (
                     ContainerCount == other.ContainerCount ||
-                    ContainerCount != null &&
                     ContainerCount.Equals(other.ContainerCount)
                 ) && 
                 (
                     MaxTemperature == other.MaxTemperature ||
-                    MaxTemperature != null &&
                     MaxTemperature.Equals(other.MaxTemperature)
                 ) && 
                 (
                     MeanTemperature == other.MeanTemperature ||
-                    MeanTemperature != null &&
                     MeanTemperature.Equals(other.MeanTemperature)
                 ) && 
                 (
                     SpoiledContainerCount == other.SpoiledContainerCount ||
-                    SpoiledContainerCount != null &&
                     SpoiledContainerCount.Equals(other.SpoiledContainerCount)
                 ) && 
                 (
                     SpoiledProductCount == other.SpoiledProductCount ||
-                    SpoiledProductCount != null &&
                     SpoiledProductCount.Equals(other.SpoiledProductCount)
                 );
         }
+
 
         /// <summary>
         /// Gets the hash code
@@ -165,22 +171,19 @@ namespace ShippingContainer.ViewModels
                 // Suitable nullity checks etc, of course :)
                     if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                    if (ContainerCount != null)
                     hashCode = hashCode * 59 + ContainerCount.GetHashCode();
-                    if (MaxTemperature != null)
                     hashCode = hashCode * 59 + MaxTemperature.GetHashCode();
-                    if (MeanTemperature != null)
                     hashCode = hashCode * 59 + MeanTemperature.GetHashCode();
-                    if (SpoiledContainerCount != null)
                     hashCode = hashCode * 59 + SpoiledContainerCount.GetHashCode();
-                    if (SpoiledProductCount != null)
                     hashCode = hashCode * 59 + SpoiledProductCount.GetHashCode();
                 return hashCode;
             }
         }
 
+        #endregion
+
         #region Operators
-        #pragma warning disable 1591
+#pragma warning disable 1591
 
         public static bool operator ==(Trip left, Trip right)
         {
