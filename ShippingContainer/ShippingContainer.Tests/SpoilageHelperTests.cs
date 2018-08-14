@@ -14,7 +14,7 @@ namespace ShippingContainer.Tests
         [Fact]
         public void ConsecutiveDataSpoiledPositive()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             var data = new List<TemperatureRecord>()
             {
@@ -41,7 +41,7 @@ namespace ShippingContainer.Tests
         [Fact]
         public void OutOfOrderSpoiledPositive()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             var data = new List<TemperatureRecord>()
             {
@@ -68,7 +68,7 @@ namespace ShippingContainer.Tests
         [Fact]
         public void PartialDataSpoiledPositive()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             var data = new List<TemperatureRecord>()
             {
@@ -92,7 +92,7 @@ namespace ShippingContainer.Tests
         [Fact]
         public void ConsecutiveDataNotSpoiledPositive()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             var data = new List<TemperatureRecord>()
             {
@@ -119,7 +119,7 @@ namespace ShippingContainer.Tests
         [Fact]
         public void OutOfOrderNotSpoiledPositive()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             var data = new List<TemperatureRecord>()
             {
@@ -146,7 +146,7 @@ namespace ShippingContainer.Tests
         [Fact]
         public void PartialDataNotSpoiledPositive()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             var data = new List<TemperatureRecord>()
             {
@@ -170,7 +170,7 @@ namespace ShippingContainer.Tests
         [Fact]
         public void ConsecutiveDataSpoiledNegative()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             var data = new List<TemperatureRecord>()
             {
@@ -197,7 +197,7 @@ namespace ShippingContainer.Tests
         [Fact]
         public void OutOfOrderSpoiledNegative()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             var data = new List<TemperatureRecord>()
             {
@@ -224,7 +224,7 @@ namespace ShippingContainer.Tests
         [Fact]
         public void PartialDataSpoiledNegative()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             var data = new List<TemperatureRecord>()
             {
@@ -248,7 +248,7 @@ namespace ShippingContainer.Tests
         [Fact]
         public void ConsecutiveDataNotSpoiledNegative()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             var data = new List<TemperatureRecord>()
             {
@@ -275,7 +275,7 @@ namespace ShippingContainer.Tests
         [Fact]
         public void OutOfOrderNotSpoiledNegative()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             var data = new List<TemperatureRecord>()
             {
@@ -302,7 +302,7 @@ namespace ShippingContainer.Tests
         [Fact]
         public void PartialDataNotSpoiledNegative()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             var data = new List<TemperatureRecord>()
             {
