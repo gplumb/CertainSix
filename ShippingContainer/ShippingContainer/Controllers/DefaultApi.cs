@@ -194,8 +194,12 @@ namespace ShippingContainer.Controllers
             var resourceVersion = Math.Abs(trip.Updated.GetHashCode());
             Response.Headers.Add("ETag", new StringValues(resourceVersion.ToString()));
 
-            // All done
-            return new ObjectResult(result);
+            // Prepare controller output
+            var output = new ObjectResult(result);
+
+            // Explicitly add the status code as a concession to unit testing this action outside of MVC
+            output.StatusCode = 200;
+            return output;
         }
     }
 }

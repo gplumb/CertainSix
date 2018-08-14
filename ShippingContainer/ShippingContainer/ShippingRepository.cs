@@ -10,10 +10,13 @@ namespace ShippingContainer
     /// </summary>
     public class ShippingRepository : DbContext, IShippingRepository
     {
+        /// </inheritdoc />
         public DbSet<Trip> Trips { get; set; }
 
+        /// </inheritdoc />
         public DbSet<Container> Containers { get; set; }
 
+        /// </inheritdoc />
         public DbSet<TemperatureRecord> TemperatureRecords { get; set; }
 
 

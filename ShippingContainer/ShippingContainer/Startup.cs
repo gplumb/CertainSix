@@ -11,6 +11,9 @@ using ShippingContainer.Interfaces;
 
 namespace ShippingContainer
 {
+    /// <summary>
+    /// Controls WebAPI configuration and startup
+    /// </summary>
     public class Startup
     {
         public IConfiguration Configuration { get; }
