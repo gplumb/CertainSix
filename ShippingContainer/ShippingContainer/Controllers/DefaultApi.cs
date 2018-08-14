@@ -15,14 +15,27 @@ using System.ComponentModel.DataAnnotations;
 
 using ShippingContainer.Attributes;
 using ShippingContainer.ViewModels;
+using ShippingContainer.Interfaces;
 
 namespace ShippingContainer.Controllers
 {
     /// <summary>
-    /// 
+    /// DefaultApiController
     /// </summary>
     public class DefaultApiController : Controller
     {
+        readonly IShippingRepository _repo;
+
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public DefaultApiController(IShippingRepository repository)
+        {
+            _repo = repository;
+        }
+
+
         /// <summary>
         /// Adds a container record to a trip.
         /// </summary>

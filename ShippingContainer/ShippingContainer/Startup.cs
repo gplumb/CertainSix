@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using System.IO;
+using ShippingContainer.Interfaces;
 
 namespace ShippingContainer
 {
@@ -29,6 +24,12 @@ namespace ShippingContainer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            // Use in-memory EF provider
+            services.AddDbContext<ShippingRepository>(options => options.UseInMemoryDatabase("ShippingContainer"));
+
+            // Allow DI via constructor
+            services.AddTransient<IShippingRepository, ShippingRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
