@@ -50,14 +50,7 @@ namespace ShippingContainer.Controllers
         [ValidateModelState]
         public virtual IActionResult CreateContainer([FromRoute][Required]string tripId, [FromBody]ContainerCreationDetails containerCreationDetails)
         {
-            // We're using numbers in our datastore, so convert the parameter into an integer
-            int tid = 0;
-            if (!int.TryParse(tripId, out tid))
-            {
-                return null;
-            }
-
-            var trip = _repo.Trips.FirstOrDefault(x => x.Id.Equals(tid));
+            var trip = GetTripById(tripId);
 
             if (trip == null)
             {
@@ -96,6 +89,22 @@ namespace ShippingContainer.Controllers
             _repo.Containers.Add(model);
             _repo.SaveChanges();
             return StatusCode(201);
+        }
+
+
+        /// <summary>
+        /// Attempt to fetch a trip for the given id
+        /// </summary>
+        private Models.Trip GetTripById(string tripId)
+        {
+            // We're using numbers in our datastore, so convert the parameter into an integer
+            int tid = 0;
+            if (!int.TryParse(tripId, out tid))
+            {
+                return null;
+            }
+
+            return _repo.Trips.FirstOrDefault(x => x.Id.Equals(tid));
         }
 
 
@@ -143,20 +152,31 @@ namespace ShippingContainer.Controllers
         [ValidateModelState]
         public virtual IActionResult TripsTripIdGet([FromRoute][Required]string tripId)
         {
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(Trip));
+            var trip = GetTripById(tripId);
 
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
+            if (trip == null)
+            {
+                return StatusCode(404);
+            }
 
-            string exampleJson = null;
-            exampleJson = "{\r\n  \"maxTemperature\" : 6.0274563,\r\n  \"meanTemperature\" : 1.4658129,\r\n  \"spoiledContainerCount\" : 5.962133916683182377482808078639209270477294921875,\r\n  \"id\" : \"id\",\r\n  \"spoiledProductCount\" : 5.63737665663332876420099637471139430999755859375,\r\n  \"containerCount\" : 0.80082819046101150206595775671303272247314453125\r\n}";
+            // First-cut, this can be calculated more efficiently
+            float meanTemp = _repo.TemperatureRecords.Where(x => x.TripId.Equals(trip.Id)).Average(r => r.Value);
+            float maxTemp = _repo.TemperatureRecords.Where(x => x.TripId.Equals(trip.Id)).Max(r => r.Value);
+            float containerCount = _repo.Containers.Where(x => x.TripId == trip.Id).Count();
 
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<Trip>(exampleJson)
-            : default(Trip);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            // TODO: ETag header for resource version
+            // TODO: spoiled container count
+            // TODO: spoiled product count
+
+            var result = new ViewModels.Trip()
+            {
+                Id = tripId,
+                ContainerCount = containerCount,
+                MaxTemperature = maxTemp,
+                MeanTemperature = meanTemp
+            };
+
+            return new ObjectResult(result);
         }
     }
 }
