@@ -17,6 +17,7 @@ using ShippingContainer.Attributes;
 using ShippingContainer.ViewModels;
 using ShippingContainer.Interfaces;
 using System.Linq;
+using ShippingContainer.Helpers;
 
 namespace ShippingContainer.Controllers
 {
@@ -81,6 +82,8 @@ namespace ShippingContainer.Controllers
                     TripId = trip.Id
                 }).ToList()
             };
+
+            model.IsSpoiled = SpoilageHelpers.IsSpoiled(model.Temperatures, trip.SpoilTemperature, trip.SpoilDuration);
 
             // TODO: Work out spoilage counts now and Maximum
             // TODO: Work out mean now or later?

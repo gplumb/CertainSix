@@ -15,5 +15,23 @@ namespace ShippingContainer.Models
         public DateTime Time { get; set; }
 
         public float Value { get; set; }
+
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public TemperatureRecord()
+        {
+        }
+
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public TemperatureRecord(DateTime time, float value)
+        {
+            Time = time;
+            Value = value;
+        }
     }
 }

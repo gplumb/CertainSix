@@ -15,6 +15,8 @@ namespace ShippingContainer.Models
 
         public double ProductCount { get; set; }
 
+        public bool IsSpoiled { get; set; }
+
         public List<TemperatureRecord> Temperatures { get; set; }
 
         public DateTime Created { get; set; } = DateTime.UtcNow;
@@ -22,7 +24,5 @@ namespace ShippingContainer.Models
         // TODO: Store mean temperature or calculate via query?
 
         // TODO: MaxTemperature
-
-        // TODO: IsSpoiled
     }
 }
