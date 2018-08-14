@@ -16,6 +16,7 @@ using System.ComponentModel.DataAnnotations;
 using ShippingContainer.Attributes;
 using ShippingContainer.ViewModels;
 using ShippingContainer.Interfaces;
+using System.Linq;
 
 namespace ShippingContainer.Controllers
 {
@@ -45,7 +46,7 @@ namespace ShippingContainer.Controllers
         /// <response code="400">Invalid creation details.</response>
         /// <response code="404">Trip not found</response>
         [HttpPost]
-        [Route("//trips/{tripId}/containers")]
+        [Route("/trips/{tripId}/containers")]
         [ValidateModelState]
         public virtual IActionResult CreateContainer([FromRoute][Required]string tripId, [FromBody]ContainerCreationDetails containerCreationDetails)
         {
@@ -62,6 +63,7 @@ namespace ShippingContainer.Controllers
             throw new NotImplementedException();
         }
 
+
         /// <summary>
         /// Create a new trip.
         /// </summary>
@@ -69,19 +71,31 @@ namespace ShippingContainer.Controllers
         /// <response code="201">Successful trip creation.</response>
         /// <response code="400">Invalid creation details.</response>
         [HttpPost]
-        [Route("//trips")]
+        [Route("/trips")]
         [ValidateModelState]
         public virtual IActionResult CreateTrip([FromBody]TripCreationDetails tripCreationDetails)
         {
-            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(201);
+            var trip = _repo.Trips.FirstOrDefault(x => x.Name.Equals(tripCreationDetails.Name));
 
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
+            if (trip != null)
+            {
+                return StatusCode(400);
+            }
 
+            trip = new Models.Trip()
+            {
+                Name = tripCreationDetails.Name,
+                SpoilDuration = tripCreationDetails.SpoilDuration,
+                SpoilTemperature = tripCreationDetails.SpoilTemperature
+            };
 
-            throw new NotImplementedException();
+            _repo.Trips.Add(trip);
+            _repo.SaveChanges();
+
+            Response.Headers.Add("Location", new Microsoft.Extensions.Primitives.StringValues($"/trips/{trip.Id}"));
+            return StatusCode(201);
         }
+
 
         /// <summary>
         /// Gets a trip by id.
@@ -90,7 +104,7 @@ namespace ShippingContainer.Controllers
         /// <response code="200">Successful operation</response>
         /// <response code="404">Trip not found</response>
         [HttpGet]
-        [Route("//trips/{tripId}")]
+        [Route("/trips/{tripId}")]
         [ValidateModelState]
         public virtual IActionResult TripsTripIdGet([FromRoute][Required]string tripId)
         {
