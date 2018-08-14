@@ -6,6 +6,7 @@ using ShippingContainer.Controllers;
 using ShippingContainer.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Xunit;
 
@@ -225,12 +226,18 @@ namespace ShippingContainer.Tests
         /// <summary>
         /// Helper that creates and validates a trip, complete with containers (returning its ID)
         /// </summary>
-        /// <returns></returns>
         private int CreateTripWithContainers(string tripName)
         {
             var controller = InitController("POST");
             var tripId = CreateTrip(controller, new ViewModels.TripCreationDetails() { Name = tripName, SpoilDuration = 1, SpoilTemperature = 10, });
             var dateTime = DateTime.UtcNow;
+
+            // Check that the trip's .Updated timestamp is updated by the controller
+            // after we have added a container to it (tests field used for ETag functionality in GET /trip/x)
+            IShippingRepository repo = _provider.GetRequiredService<IShippingRepository>();
+            var trip = repo.Trips.SingleOrDefault(x => x.Id.Equals(tripId));
+            Assert.NotNull(trip);
+            var updatedTimeStamp = trip.Updated;
 
             // Create a container
             var data = new ViewModels.ContainerCreationDetails()
@@ -253,6 +260,13 @@ namespace ShippingContainer.Tests
             controller = InitController("POST");
             result = controller.CreateContainer(tripId.ToString(), data) as StatusCodeResult;
             Assert.Equal((int)HttpStatusCode.BadRequest, result.StatusCode);
+
+            // Ensure that .Updated is newer
+            // Note: We need to re-initialize the repo at this point to avoid caching)
+            repo = _provider.GetRequiredService<IShippingRepository>();
+            trip = repo.Trips.SingleOrDefault(x => x.Id.Equals(tripId));
+            Assert.NotNull(trip);
+            Assert.True(trip.Updated > updatedTimeStamp);
 
             // Add another container to this trip
             data = new ViewModels.ContainerCreationDetails()
