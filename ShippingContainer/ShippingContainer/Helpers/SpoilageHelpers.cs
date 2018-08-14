@@ -25,12 +25,13 @@ namespace ShippingContainer.Helpers
             if (data.Count == 1)
             {
                 // Not enough data points, so be super pessimistic
-                return (data[0].Value >= spoilageTemperature) ? true : false;
+                return (spoilageTemperature <= 0) ? data[0].Value <= spoilageTemperature : data[0].Value >= spoilageTemperature;
             }
 
             // Leave as double to avoid boxing when looking at DateTime differences
             var largestDurationAtThreshold = 0d;
             var last = data[0];
+            var item = data[0];
             int x = 1;
 
             do
@@ -38,12 +39,31 @@ namespace ShippingContainer.Helpers
                 // The difference between the last known data point and this one
                 var difference = data[x].Time.Subtract(last.Time).TotalSeconds;
 
-                // If we have gaps in the data, then pessimistically use the data point with the largest temperature
-                var largerDataPoint = (last.Value > data[x].Value) ? last : data[x];
-                var item = (difference > 0) ? largerDataPoint : data[x];
+                // Do we have a gap in the data?
+                if (difference > 0)
+                {
+                    // Yes - then find the worst data point (pessimistic) to use
+                    if (spoilageTemperature <= 0)
+                    {
+                        // Use the colder of the two if the threshold is negative
+                        item = (last.Value < data[x].Value) ? last : data[x];
+                    }
+                    else
+                    {
+                        // Use the higher of the two if the threshold is positive
+                        item = (last.Value > data[x].Value) ? last : data[x];
+                    }
+                }
+                else
+                {
+                    // No
+                    item = data[x];
+                }
 
-                // Is the temperature at or above the threshold?
-                if (item.Value >= spoilageTemperature)
+                // Is the temperature beyond the spoilage threshold?
+                var isThresholdMet = (spoilageTemperature <= 0) ? item.Value <= spoilageTemperature : item.Value >= spoilageTemperature;
+
+                if (isThresholdMet)
                 {
                     // Yes - then pessimistically store the duration at this temperature
                     largestDurationAtThreshold += difference;
@@ -56,7 +76,7 @@ namespace ShippingContainer.Helpers
                 last = data[x];
                 x++;
             }
-            while (x < data.Count && largestDurationAtThreshold < spoilageTemperature);
+            while (x < data.Count && largestDurationAtThreshold < spoilageDurationInSeconds);
 
             // We've iterated over everything, do we have spoilage?
             return (largestDurationAtThreshold >= spoilageDurationInSeconds) ? true : false;
