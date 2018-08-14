@@ -10,6 +10,7 @@
 
 using System;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
@@ -84,9 +85,7 @@ namespace ShippingContainer.Controllers
             };
 
             model.IsSpoiled = SpoilageHelpers.IsSpoiled(model.Temperatures, trip.SpoilTemperature, trip.SpoilDuration);
-
-            // TODO: Work out spoilage counts now and Maximum
-            // TODO: Work out mean now or later?
+            model.MaxTemperature = model.Temperatures.Max(x => x.Value);
 
             trip.Updated = DateTime.UtcNow;
             _repo.Containers.Add(model);
@@ -162,23 +161,41 @@ namespace ShippingContainer.Controllers
                 return StatusCode(404);
             }
 
-            // First-cut, this can be calculated more efficiently
-            float meanTemp = _repo.TemperatureRecords.Where(x => x.TripId.Equals(trip.Id)).Average(r => r.Value);
-            float maxTemp = _repo.TemperatureRecords.Where(x => x.TripId.Equals(trip.Id)).Max(r => r.Value);
-            float containerCount = _repo.Containers.Where(x => x.TripId == trip.Id).Count();
+            // The mean could be stored at container level and calculated here with a smaller number of data points, but
+            // there is the potential for rounding issues, so I have favoured runtime accuracy here
+            float meanTemp = 0;
+            float maxTemp = 0;
 
-            // TODO: ETag header for resource version
-            // TODO: spoiled container count
-            // TODO: spoiled product count
+            double containerCount = _repo.Containers.Where(x => x.TripId == trip.Id).Count();
+            double spoiledContainerCount = 0;
+            double spoiledProductCount = 0;
+
+            if (containerCount > 0)
+            {
+                // These could be stored on their respective objects if performance of these queries were to become an issue
+                // Note. If that is the case, ensure that all update queries use the .Updated field to avoid lost DB updates
+                meanTemp = _repo.TemperatureRecords.Where(x => x.TripId.Equals(trip.Id)).Average(r => r.Value);
+
+                maxTemp = _repo.Containers.Max(x => x.MaxTemperature);
+                spoiledContainerCount = _repo.Containers.Where(x => x.TripId == trip.Id && x.IsSpoiled == true).Count();
+                spoiledProductCount = _repo.Containers.Where(x => x.TripId == trip.Id && x.IsSpoiled == true).Select(x => x.ProductCount).Sum();
+            }
 
             var result = new ViewModels.Trip()
             {
                 Id = tripId,
                 ContainerCount = containerCount,
                 MaxTemperature = maxTemp,
-                MeanTemperature = meanTemp
+                MeanTemperature = meanTemp,
+                SpoiledContainerCount = spoiledContainerCount,
+                SpoiledProductCount = spoiledProductCount
             };
 
+            // .Updated timestamp is as good as anything to use here...
+            var resourceVersion = Math.Abs(trip.Updated.GetHashCode());
+            Response.Headers.Add("ETag", new StringValues(resourceVersion.ToString()));
+
+            // All done
             return new ObjectResult(result);
         }
     }

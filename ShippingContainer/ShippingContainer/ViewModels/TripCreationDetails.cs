@@ -47,7 +47,7 @@ namespace ShippingContainer.ViewModels
         /// <value>The number of seconds required at the spoil temperature to cause product spolage.</value>
         [Required]
         [DataMember(Name="spoilDuration")]
-        [Range(0, double.MaxValue)]
+        [Range(1, double.MaxValue)]
         public double SpoilDuration { get; set; }
 
 
