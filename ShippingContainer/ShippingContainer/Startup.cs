@@ -37,12 +37,14 @@ namespace ShippingContainer
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            /*
             if (IsDevEnvironment)
             {
                 // Use in-memory EF provider
                 services.AddDbContext<ShippingRepository>(options => options.UseInMemoryDatabase("ShippingContainer"));
             }
             else
+            */
             {
                 // Use Sql Server provider
                 services.AddDbContext<ShippingRepository>(options => options.UseSqlServer(Configuration["SqlConnectionString"]));

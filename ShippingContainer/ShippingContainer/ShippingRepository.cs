@@ -5,13 +5,24 @@ using ShippingContainer.Models;
 
 namespace ShippingContainer
 {
+    /// <summary>
+    /// Implementation of IShippingRepository using EF Core
+    /// </summary>
     public class ShippingRepository : DbContext, IShippingRepository
     {
+        public DbSet<Trip> Trips { get; set; }
+
+        public DbSet<Container> Containers { get; set; }
+
+        public DbSet<TemperatureRecord> TemperatureRecords { get; set; }
+
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public ShippingRepository(DbContextOptions<ShippingRepository> options)
           : base(options)
         {
         }
-
-        public DbSet<Trip> Trips { get; set; }
     }
 }

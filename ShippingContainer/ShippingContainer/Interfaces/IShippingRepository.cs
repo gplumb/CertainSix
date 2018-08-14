@@ -8,6 +8,10 @@ namespace ShippingContainer.Interfaces
     {
         DbSet<Trip> Trips { get; set; }
 
+        DbSet<Container> Containers { get; set; }
+
+        DbSet<TemperatureRecord> TemperatureRecords { get; set; }
+
         DatabaseFacade Database { get; }
 
         int SaveChanges();
