@@ -1,0 +1,167 @@
+openapi: 3.0.0
+
+info:
+  title: Shipping Container Spoilage
+  description: An API that tracks spoilage in shipping containers due to over heating for periods of time.
+  version: 1.0.0
+
+paths:
+  /trips:
+    post:
+      summary: Create a new trip.
+      operationId: createTrip
+      requestBody:
+        description: The trip resource to create.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripCreationDetails'
+      responses:
+        201:
+          description: Successful trip creation.
+          headers:
+            Location:
+              schema:
+                type: string
+        400:
+          description: Invalid creation details.
+
+  /trips/{tripId}/containers:
+    post:
+      summary: Adds a container record to a trip.
+      operationId: createContainer
+      parameters:
+        - name: tripId
+          in: path
+          description: The trip id.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The container resource to create.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContainerCreationDetails'
+      responses:
+        201:
+          description: Successful container creation.
+        400:
+          description: Invalid creation details.
+        404:
+          description: Trip not found
+
+  /trips/{tripId}:
+    get:
+      summary: Gets a trip by id.
+      parameters:
+      - name: tripId
+        in: path
+        description: The id of the trip to return.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Successful operation
+          headers:
+            ETag:
+              description: Resource version
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trip"
+        404:
+          description: Trip not found
+
+components:
+  schemas:
+    TripCreationDetails:
+      type: object
+      required:
+        - name
+        - spoilTemperature
+        - spoilDuration
+      properties:
+        name:
+          type: string
+        spoilTemperature:
+          type: number
+          format: float
+          description: The temperature at which products start to spoil in degrees celsius.
+        spoilDuration:
+          type: number
+          format: integer
+          description: The number of seconds required at the spoil temperature to cause product spolage.
+
+    Trip:
+      type: object
+      required:
+        - id
+        - containerCount
+        - maxTemperature
+        - meanTemperature
+        - spoiledContainerCount
+        - spoiledProductCount
+      properties:
+        id:
+          type: string
+        containerCount:
+          type: number
+          format: integer
+          description: The total number of containers in the trip.
+        maxTemperature:
+          type: number
+          format: float
+          description: The maximum temperature for all containers in the trip in degrees celsius.
+        meanTemperature:
+          type: number
+          format: float
+          description: The mean temperature for all containers in the trip in degrees celsius.
+        spoiledContainerCount:
+          type: number
+          format: integer
+          description: The overall number of spoiled containers.
+        spoiledProductCount:
+          type: number
+          format: integer
+          description: The overall number of spoiled products.
+
+    ContainerCreationDetails:
+      type: object
+      required:
+        - id
+        - productCount
+        - measurements
+      properties:
+        id:
+          type: string
+          description: The container id.
+        productCount:
+          type: number
+          format: integer
+          description: The number of products in the container.
+        measurements:
+          type: array
+          description: The container measurements.
+          items:
+            $ref: "#/components/schemas/TemperatureRecord"
+
+    TemperatureRecord:
+      type: object
+      required:
+        - time
+        - value
+      properties:
+        time:
+          type: string
+          format: date-time
+          description: The time of the recording as an ISO 8601 standard string.
+        value:
+          type: number
+          format: float
+          description: The recording value in degrees celsius.

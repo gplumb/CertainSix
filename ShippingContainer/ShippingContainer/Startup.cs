@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -41,7 +44,26 @@ namespace ShippingContainer
             }
 
             app.UseHttpsRedirection();
+
+            // Static file serving supports ~400 mimetypes, but yaml isn't one of them!
+            var provider = new FileExtensionContentTypeProvider();
+            provider.Mappings[".yaml"] = "text/yaml";
+
+            // By adding our new provider, we can safely serve the API spec, which is
+            // handy for Swagger UI
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot")),
+                ContentTypeProvider = provider,
+                RequestPath = ""
+            });
+
             app.UseMvc();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/apispec.yaml", "Shipping Container Spoilage v1.0.0");
+            });
         }
     }
 }
