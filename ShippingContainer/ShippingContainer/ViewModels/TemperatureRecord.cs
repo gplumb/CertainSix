@@ -93,12 +93,10 @@ namespace ShippingContainer.ViewModels
             return 
                 (
                     Time == other.Time ||
-                    Time != null &&
                     Time.Equals(other.Time)
                 ) && 
                 (
                     Value == other.Value ||
-                    Value != null &&
                     Value.Equals(other.Value)
                 );
         }

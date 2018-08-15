@@ -24,7 +24,7 @@ namespace ShippingContainer
         /// <summary>
         /// Constructor
         /// </summary>
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
 
