@@ -1,6 +1,6 @@
 # CertainSix ![Build Status](https://api.travis-ci.org/gplumb/CertainSix.svg?branch=master)
 
-##Shipping Container Spoilage
+Shipping Container Spoilage
 
 Build an API to track shipping container temperature sensors to extract useful insights.
   
