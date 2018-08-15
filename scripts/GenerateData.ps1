@@ -9,7 +9,7 @@ param([string]$fileName      = "output.json",    # Where to write the resulting 
       [Int32] $minTemp       = -10,              # Minimum temperature for generated samples
       [Int32] $maxTemp       = 10,               # Maximum temperature for generated samples
       [float] $interval      = 0.1,              # The temperature variance, per sample
-      [float] $dropRate      = 0.37,             # Percentage of samples to drop (To simulate sensor inaccuracy
+      [float] $dropRate      = 0.37,             # Percentage of samples to drop (To simulate sensor inaccuracy)
 
       [Int32] $sampleRate    = 1,                # The frequency of temperature sampling (in seconds)
       [Int32] $days          = 5)                # The number of day's worth of data to generate
