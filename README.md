@@ -22,8 +22,12 @@ To use an MS SQL database:
  * Switch the project to the _Release_ configuration
  * Using the _Package Manager_, execute the command `Update-Database`
 
+### Known Issues
+* As it stands, there is no authentication required to use this api (per the spec)
+* The ETag provided in the `\trips\{tripId}` endpoint isn't actually enforced (per the spec)
+
 ### Generate test data
-In the `.\Scripts` folder, there is a PowerShell script that can be used to generate container payloads for the `/trips/{tripId}/containers` endpoint.
+In the `.\Scripts` folder, there is a PowerShell script that can be used to generate container payloads for the `\trips\{tripId}/containers` endpoint.
 
 The script generates an oscillating range of temperature sensor data, the frequency, speed and range of which may all be optionally configured.
 
