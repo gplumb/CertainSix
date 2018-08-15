@@ -1,8 +1,9 @@
 # CertainSix ![Build Status](https://api.travis-ci.org/gplumb/CertainSix.svg?branch=master)
 
 ##Shipping Container Spoilage
-Build an API to track shipping container temperature sensors to extract useful insights.
 
+Build an API to track shipping container temperature sensors to extract useful insights.
+  
 ### Stack
 * DotNet Core 2.1 WebAPI (a modern, clean, cross-platform framework that promotes good development practices, such as DI and separation of concerns)
 * EF Core (InMemory and MS SQL Server provider)
